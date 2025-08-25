@@ -122,7 +122,7 @@ if __name__ == "__main__":
         mel_norm_file="/home/xtts_v2_training/src/run/training/XTTS_v2.0_original_model_files/mel_stats.pth",
         dvae_checkpoint="/home/xtts_v2_training/src/run/training/XTTS_v2.0_original_model_files/dvae.pth",
         xtts_checkpoint="/home/xtts_v2_training/src/run/training/XTTS_ELEVEN_ONLY_VALID_ALL-August-22-2025_08+11AM-0cbe12f/best_model_58710.pth",
-        tokenizer_file="/home/xtts_v2_training/vocab_stress.json",
+        tokenizer_file="/home/xtts_v2_training/src/vocab_stress.json",
         gpt_num_audio_tokens=1026,
         gpt_start_audio_token=1024,
         gpt_stop_audio_token=1025,
