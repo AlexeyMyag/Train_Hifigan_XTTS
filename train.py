@@ -52,7 +52,7 @@ class GPTHifiganTrainer:
 
 if __name__ == "__main__":
     config = GPTHifiganConfig(
-        batch_size=64,
+        batch_size=100,
         eval_batch_size=2,
         num_loader_workers=4,
         num_eval_loader_workers=4,
