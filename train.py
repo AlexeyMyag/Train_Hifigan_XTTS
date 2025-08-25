@@ -1,13 +1,28 @@
+import importlib
 import os
 import random
+import sys
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "TTS_my"))
+
+# 2) Создаём псевдоним модуля
+sys.modules["TTS"] = importlib.import_module("TTS_my.TTS")
+sys.modules["TTS.tts"] = importlib.import_module("TTS_my.TTS.tts")
+sys.modules["TTS.tts.configs"] = importlib.import_module("TTS_my.TTS.tts.configs")
+sys.modules["TTS.tts.configs.xtts_config"] = importlib.import_module("TTS_my.TTS.tts.configs.xtts_config")
+sys.modules["TTS.tts.models"] = importlib.import_module("TTS_my.TTS.tts.models")
+sys.modules["TTS.tts.models.xtts"] = importlib.import_module("TTS_my.TTS.tts.models.xtts")
+sys.modules["TTS.utils"] = importlib.import_module("TTS_my.TTS.utils")
+sys.modules["TTS.utils.io"] = importlib.import_module("TTS_my.TTS.utils.io")
 
 import torch
 from trainer import Trainer, TrainerArgs
-from TTS.utils.audio import AudioProcessor
+from TTS_my.TTS.utils.audio import AudioProcessor
 
 from datasets.preprocess import load_wav_feat_spk_data
 from configs.gpt_hifigan_config import GPTHifiganConfig
 from models.gpt_gan import GPTGAN
+
 
 class GPTHifiganTrainer:
     def __init__(self, config):
@@ -34,6 +49,7 @@ class GPTHifiganTrainer:
         )
         trainer.fit()
 
+
 if __name__ == "__main__":
     config = GPTHifiganConfig(
         batch_size=64,
@@ -56,11 +72,11 @@ if __name__ == "__main__":
         lr_disc=1e-4,
         use_stft_loss=True,
         use_l1_spec_loss=True,
-        data_path="Ljspeech_latents/wavs",
-        mel_path="Ljspeech_latents/gpt_latents",
-        spk_path ="Ljspeech_latents/speaker_embeddings",
+        data_path="ELEVEN_HIFI/wavs",
+        mel_path="ELEVEN_HIFI/gpt_latents",
+        spk_path ="ELEVEN_HIFI/speaker_embeddings",
         output_path="outputs",
-        pretrain_path="XTTS-v2/model.pth",
+        pretrain_path="/home/xtts_v2_training/src/run/training/XTTS_ELEVEN_ONLY_VALID_ALL-August-22-2025_08+11AM-0cbe12f/best_model_58710.pth",
         train_spk_encoder=False,
     )
 

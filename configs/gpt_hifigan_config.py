@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from TTS.vocoder.configs.shared_configs import BaseGANVocoderConfig
+from TTS_my.TTS.vocoder.configs.shared_configs import BaseGANVocoderConfig
 
 
 @dataclass
@@ -9,7 +9,7 @@ class GPTHifiganConfig(BaseGANVocoderConfig):
 
     Example:
 
-        >>> from TTS.vocoder.configs import HifiganConfig
+        >>> from TTS_my.TTS.vocoder.configs import HifiganConfig
         >>> config = HifiganConfig()
 
     Args:

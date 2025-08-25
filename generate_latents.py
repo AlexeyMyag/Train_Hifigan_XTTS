@@ -1,5 +1,20 @@
+import importlib
 import os
+import sys
+
 from tqdm import tqdm
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "TTS_my"))
+
+# 2) Создаём псевдоним модуля
+sys.modules["TTS"] = importlib.import_module("TTS_my.TTS")
+sys.modules["TTS.tts"] = importlib.import_module("TTS_my.TTS.tts")
+sys.modules["TTS.tts.configs"] = importlib.import_module("TTS_my.TTS.tts.configs")
+sys.modules["TTS.tts.configs.xtts_config"] = importlib.import_module("TTS_my.TTS.tts.configs.xtts_config")
+sys.modules["TTS.tts.models"] = importlib.import_module("TTS_my.TTS.tts.models")
+sys.modules["TTS.tts.models.xtts"] = importlib.import_module("TTS_my.TTS.tts.models.xtts")
+sys.modules["TTS.utils"] = importlib.import_module("TTS_my.TTS.utils")
+sys.modules["TTS.utils.io"] = importlib.import_module("TTS_my.TTS.utils.io")
 
 import numpy as np
 import torchaudio
@@ -7,12 +22,12 @@ import torch
 from torch.utils.data import DataLoader
 from pydub import AudioSegment
 
-from TTS.tts.layers.xtts.trainer.dataset import XTTSDataset
-from TTS.tts.datasets import load_tts_samples
-from TTS.tts.layers.xtts.tokenizer import VoiceBpeTokenizer
-from TTS.config.shared_configs import BaseDatasetConfig
-from TTS.tts.layers.xtts.trainer.gpt_trainer import GPTArgs, GPTTrainerConfig, XttsAudioConfig
-from TTS.tts.models.xtts import load_audio
+from TTS_my.TTS.tts.layers.xtts.trainer.dataset import XTTSDataset
+from TTS_my.TTS.tts.datasets import load_tts_samples
+from TTS_my.TTS.tts.layers.xtts.tokenizer import VoiceBpeTokenizer
+from TTS_my.TTS.config.shared_configs import BaseDatasetConfig
+from TTS_my.TTS.tts.layers.xtts.trainer.gpt_trainer import GPTArgs, GPTTrainerConfig, XttsAudioConfig
+from TTS_my.TTS.tts.models.xtts import load_audio
 
 from models.gpt_decode import GPTDecode
 from datasets.dataset_xtts import GPTXTTSDataset
@@ -95,18 +110,19 @@ class GPTDecoder:
                 with open(os.path.join(output_dir, "speaker_embeddings", file_name.replace(".wav", ".npy")), "wb") as f:
                     np.save(f, speaker_embedding[i].detach().squeeze(0).squeeze(1).cpu())
 
+
 if __name__ == "__main__":
     audio_config = XttsAudioConfig(sample_rate=22050, dvae_sample_rate=22050, output_sample_rate=24000)
     model_args = GPTArgs(
-        max_conditioning_length=132300,  # 6 secs
-        min_conditioning_length=66150,  # 3 secs
+        max_conditioning_length=132300,  # 198450, #132300,  # 6 secs
+        min_conditioning_length=11025,  # 11025, #66150,  # 3 secs
         debug_loading_failures=False,
-        max_wav_length=255995,  # ~11.6 seconds
+        max_wav_length=255995,  # 286650, #255995,  # ~11.6 seconds
         max_text_length=200,
-        mel_norm_file="XTTS-v2/mel_stats.pth",
-        dvae_checkpoint="XTTS-v2/dvae.pth",
-        xtts_checkpoint="XTTS-v2/model.pth",
-        tokenizer_file="XTTS-v2/vocab.json",
+        mel_norm_file="/home/xtts_v2_training/src/run/training/XTTS_v2.0_original_model_files/mel_stats.pth",
+        dvae_checkpoint="/home/xtts_v2_training/src/run/training/XTTS_v2.0_original_model_files/dvae.pth",
+        xtts_checkpoint="/home/xtts_v2_training/src/run/training/XTTS_ELEVEN_ONLY_VALID_ALL-August-22-2025_08+11AM-0cbe12f/best_model_58710.pth",
+        tokenizer_file="/home/xtts_v2_training/vocab_stress.json",
         gpt_num_audio_tokens=1026,
         gpt_start_audio_token=1024,
         gpt_stop_audio_token=1025,
@@ -116,18 +132,19 @@ if __name__ == "__main__":
     config = GPTTrainerConfig(
         audio=audio_config,
         model_args=model_args,
-        batch_size = 4,
+        batch_size=4,
         num_loader_workers=8,
     )
 
-    dataset_en = BaseDatasetConfig(
-        formatter="ljspeech",
-        dataset_name="ljspeech",
-        path=os.path.join(os.path.dirname(os.path.abspath(__file__)), "LJSpeech-1.1"),
-        meta_file_train=os.path.join(os.path.dirname(os.path.abspath(__file__)), "LJSpeech-1.1/metadata.csv"),
-        language="en",
+    meta_file_our = "/home/datasets/ELEVEN_VALID_ALL/metadata_normalized.txt"
+    config_dataset_our = BaseDatasetConfig(
+        formatter="caltat",
+        dataset_name="caltat",
+        path="/home/datasets/ELEVEN_VALID_ALL/",
+        meta_file_train=meta_file_our,
+        language="ru",
     )
-    dataset_config = [dataset_en]
+    dataset_config = [config_dataset_our]
 
     gpt_decode = GPTDecoder(config, dataset_config)
-    gpt_decode.generate(output_dir="Ljspeech_latents")
+    gpt_decode.generate(output_dir="ELEVEN_HIFI")
