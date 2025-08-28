@@ -72,11 +72,11 @@ if __name__ == "__main__":
         lr_disc=1e-4,
         use_stft_loss=True,
         use_l1_spec_loss=True,
-        data_path="ELEVEN_HIFI/wavs",
-        mel_path="ELEVEN_HIFI/gpt_latents",
-        spk_path ="ELEVEN_HIFI/speaker_embeddings",
+        data_path="ELEVEN_4_VOICES_HIFI/wavs",
+        mel_path="ELEVEN_4_VOICES_HIFI/gpt_latents",
+        spk_path ="ELEVEN_4_VOICES_HIFI/speaker_embeddings",
         output_path="outputs",
-        pretrain_path="/home/xtts_v2_training/src/run/training/XTTS_ELEVEN_ONLY_VALID_ALL-August-22-2025_08+11AM-0cbe12f/best_model_58710.pth",
+        pretrain_path="/home/xtts_v2_training/src/run/training/XTTS_ELEVEN_RINA_OLEG_NIKOLAY_LARISA-August-28-2025_11+18AM-33dfdcf/best_model_147411.pth",
         train_spk_encoder=False,
     )
 

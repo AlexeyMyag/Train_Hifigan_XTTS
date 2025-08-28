@@ -121,7 +121,7 @@ if __name__ == "__main__":
         max_text_length=200,
         mel_norm_file="/home/xtts_v2_training/src/run/training/XTTS_v2.0_original_model_files/mel_stats.pth",
         dvae_checkpoint="/home/xtts_v2_training/src/run/training/XTTS_v2.0_original_model_files/dvae.pth",
-        xtts_checkpoint="/home/xtts_v2_training/src/run/training/XTTS_ELEVEN_ONLY_VALID_ALL-August-22-2025_08+11AM-0cbe12f/best_model_58710.pth",
+        xtts_checkpoint="/home/xtts_v2_training/src/run/training/XTTS_ELEVEN_RINA_OLEG_NIKOLAY_LARISA-August-28-2025_11+18AM-33dfdcf/best_model_147411.pth",
         tokenizer_file="/home/xtts_v2_training/src/vocab_stress.json",
         gpt_num_audio_tokens=1026,
         gpt_start_audio_token=1024,
@@ -136,15 +136,42 @@ if __name__ == "__main__":
         num_loader_workers=8,
     )
 
-    meta_file_our = "/home/datasets/ELEVEN_VALID_ALL/metadata_normalized.txt"
-    config_dataset_our = BaseDatasetConfig(
+    meta_file_larisa = "/home/datasets/ELEVEN_VALID_ALL/metadata_normalized_only_4_hours.txt"
+    config_dataset_larisa = BaseDatasetConfig(
         formatter="caltat",
         dataset_name="caltat",
         path="/home/datasets/ELEVEN_VALID_ALL/",
-        meta_file_train=meta_file_our,
+        meta_file_train=meta_file_larisa,
         language="ru",
     )
-    dataset_config = [config_dataset_our]
+
+    meta_file_oleg = "/home/datasets/ELEVEN_OLEG/metadata_normalized.txt"
+    config_dataset_oleg = BaseDatasetConfig(
+        formatter="caltat",
+        dataset_name="caltat",
+        path="/home/datasets/ELEVEN_OLEG/",
+        meta_file_train=meta_file_oleg,
+        language="ru",
+    )
+
+    meta_file_rina = "/home/datasets/ELEVEN_RINA/metadata_normalized.txt"
+    config_dataset_rina = BaseDatasetConfig(
+        formatter="caltat",
+        dataset_name="caltat",
+        path="/home/datasets/ELEVEN_RINA/",
+        meta_file_train=meta_file_rina,
+        language="ru",
+    )
+
+    meta_file_nikolay = "/home/datasets/ELEVEN_NIKOLAY/metadata_normalized.txt"
+    config_dataset_nikolay = BaseDatasetConfig(
+        formatter="caltat",
+        dataset_name="caltat",
+        path="/home/datasets/ELEVEN_NIKOLAY/",
+        meta_file_train=meta_file_nikolay,
+        language="ru",
+    )
+    dataset_config = [config_dataset_larisa, config_dataset_oleg, config_dataset_rina, config_dataset_nikolay]
 
     gpt_decode = GPTDecoder(config, dataset_config)
-    gpt_decode.generate(output_dir="ELEVEN_HIFI")
+    gpt_decode.generate(output_dir="ELEVEN_4_VOICES_HIFI")
